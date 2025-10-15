@@ -32,6 +32,22 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<BorrowBook> borrowBooks;
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public List<BorrowBook> getBorrowBooks() {
+        return borrowBooks;
+    }
+
+    public void setBorrowBooks(List<BorrowBook> borrowBooks) {
+        this.borrowBooks = borrowBooks;
+    }
+
     public User() {
     }
 

@@ -1,13 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.example.hsf302_group1.service;
 
-/**
-* @author Do Quang Huy_HE191197
-*/
-public class UserService {
+import com.example.hsf302_group1.model.User;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface UserService {
+    List<User> getAllUsers();
+    Optional<User> getUserById(int id);
+    User saveUser(User user);
+    void deleteUser(int id);
+    List<User> findUsersByNameContaining(String name);
+    List<User> findUsersByMembership(String membership);
+    List<User> findUsersByBalanceGreaterThan(double balance);
+    List<User> findActiveUsers ();
+    User updateUserBalance(int id, double newBalance);
 
 }
