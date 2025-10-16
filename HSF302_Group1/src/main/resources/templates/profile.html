@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>User Profile</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #f2f7ff 0%, #e9efff 100%);
+            color: #333;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            color: #1e40af;
+            margin-bottom: 30px;
+        }
+
+        .table {
+            width: 70%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .table th, .table td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 16px;
+        }
+
+        .table th {
+            background-color: #2563eb;
+            color: white;
+            width: 35%;
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table td {
+            color: #111827;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 15px 10px 0 10px;
+            padding: 10px 22px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            transition: all 0.25s ease;
+        }
+
+        .btn:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+
+        .notfound {
+            color: #dc2626;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 18px;
+        }
+
+        .notfound a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 18px;
+            background-color: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .notfound a:hover {
+            background-color: #1e3a8a;
+        }
+
+        /* ===== Animation ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .table {
+                width: 100%;
+            }
+
+            .table th, .table td {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-top: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2>User Profile</h2>
+
+<div th:if="${user != null}">
+    <table class="table">
+        <tr><th>ID</th><td th:text="${user.id}"></td></tr>
+        <tr><th>Name</th><td th:text="${user.name}"></td></tr>
+        <tr><th>Gender</th><td th:text="${user.gender} ? 'Male' : 'Female'"></td></tr>
+        <tr>
+            <th>Date of Birth</th>
+            <td th:text="${user.dob != null ? #dates.format(user.dob, 'dd/MM/yyyy') : '—'}"></td>
+        </tr>
+        <tr><th>Balance</th><td th:text="${user.balance} + ' VND'"></td></tr>
+        <tr><th>Membership</th><td th:text="${user.membership} ?: 'NONE'"></td></tr>
+        <tr><th>Status</th><td th:text="${user.status} ? 'Active' : 'Inactive'"></td></tr>
+    </table>
+
+    <div style="text-align:center;">
+        <a th:href="@{|/membership/${user.id}|}" class="btn">Manage Membership</a>
+    </div>
+</div>
+
+<div th:if="${user == null}" class="notfound">
+    <p>User not found</p>
+</div>
+
+</body>
+</html>

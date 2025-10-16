@@ -92,6 +92,14 @@ public class User {
         this.membership = membership;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "User{" +

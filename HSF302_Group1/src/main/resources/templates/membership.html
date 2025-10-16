@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Membership Registration</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #f2f7ff 0%, #e9efff 100%);
+            color: #333;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            color: #1e40af;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            width: 70%;
+            margin: 0 auto 30px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px 30px;
+            line-height: 1.8;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .info-box b { color: #1e3a8a; }
+
+        .plans {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .plan {
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            width: 250px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .plan:hover {
+            transform: translateY(-4px);
+            border-color: #2563eb;
+        }
+
+        .plan h3 {
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .plan p.price {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .plan p.desc {
+            font-size: 14px;
+            color: #555;
+            min-height: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 22px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn:hover {
+            background-color: #1e3a8a;
+            transform: translateY(-2px);
+        }
+
+        .msg {
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .msg.success { color: #16a34a; }
+        .msg.error { color: #dc2626; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .info-box, .plan { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+<h2>Membership Registration</h2>
+
+<div th:if="${user != null}">
+    <div class="info-box">
+        <p><b>Name:</b> <span th:text="${user.name}"></span></p>
+        <p><b>Balance:</b> <span th:text="${user.balance} + ' VND'"></span></p>
+        <p><b>Current Membership:</b>
+            <span th:text="${user.membership} ?: 'NONE'"></span>
+        </p>
+        <p><b>Status:</b>
+            <span th:text="${user.status} ? 'Active' : 'Inactive'"></span>
+        </p>
+    </div>
+
+    <div th:if="${ok != null}">
+        <p th:text="${ok} ? ' Đăng ký gói thành công!' : ' Không đủ số dư hoặc gói không hợp lệ!'"
+           th:classappend="${ok} ? 'msg success' : 'msg error'"></p>
+    </div>
+    <div class="plans">
+        <th:block th:if="${user.membership.equalsIgnoreCase('free')}">
+        <form th:action="@{|/membership/${user.id}|}" method="post" class="plan">
+            <h3>BASIC</h3>
+            <p class="price">20,000 VND</p>
+            <p class="desc">Mượn 5 cuốn sách trên tháng</p>
+            <input type="hidden" name="type" value="BASIC"/>
+            <input type="hidden" name="price" value="20000"/>
+            <button type="submit" class="btn">Đăng ký</button>
+        </form>
+        </th:block>
+        <th:block th:if="${user.membership.equalsIgnoreCase('basic') or user.membership.equalsIgnoreCase('free') }">
+        <form th:action="@{|/membership/${user.id}|}" method="post" class="plan">
+            <p class="price">100,000 VND</p>
+            <p class="desc">Trải nghiệm đầy đủ tính năng, ưu tiên hỗ trợ không giới hạn</p>
+            <input type="hidden" name="type" value="PREMIUM"/>
+            <input type="hidden" name="price" value="100000"/>
+            <button type="submit" class="btn">Đăng ký</button>
+        </form>
+        </th:block>
+    </div>
+    <div style="text-align:center; margin-top:30px;">
+        <a th:href="@{|/profile/${user.id}|}" class="btn">← Back to Profile</a>
+    </div>
+</div>
+
+<div th:if="${user == null}" class="msg error">
+    <p>User not found.</p>
+    <a th:href="@{/users}" class="btn">Back to List</a>
+</div>
+
+</body>
+</html>
