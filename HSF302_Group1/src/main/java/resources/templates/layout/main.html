@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="~{::title}">Library Management</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/scripts.js}" defer></script>
+    <layout:fragment th:replace="~{::head}"></layout:fragment>
+</head>
+<body>
+    <h2 layout:fragment="page-title">
+        <i class="fas fa-home"></i>Home page
+    </h2>
+
+    <div layout:fragment = "content">
+        <div>
+            <h1>Library Management System</h1>
+            <p>He thong quan li thu vien duoc phat trien boi nhom 1 - HSF302.</p>
+            <hr>
+            <p>Chon mot trong cac chuc nang ben duoi de bat dau: </p>
+        </div>
+
+        <div>
+            <div>
+                <div>
+                    <h3>Quan ly tac gia</h3>
+                    <p>Them, sua, xoa, va tim kiem thong tin tac gia.</p>
+                    <a th:href="@{/authors}" class="btn btn-primary">Di den</a>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <h3>Quan ly sach</h3>
+                    <p>Them, sua, xoa va tim kiem thong tin sach.</p>
+                    <a th:href="@{/books}" class="btn btn-sucsess">Di den</a>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <h3>Quan ly nguoi dung</h3>
+                    <p>Them, sua, xoa va tim kiem thong tin nguoi dung.</p>
+                    <a th:href="@{/users}" class="btn btn-danger">Di den</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
