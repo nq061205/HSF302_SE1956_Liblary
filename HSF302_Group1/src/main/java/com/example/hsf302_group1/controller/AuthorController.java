@@ -1,10 +1,10 @@
 package com.example.hsf302_group1.controller;
 
 import com.example.hsf302_group1.model.Author;
+import com.example.hsf302_group1.dto.AuthorSearchDTO;
 import com.example.hsf302_group1.service.AuthorService;
 import org.springframework.boot.Banner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,9 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/authors")
 public class AuthorController {
+
     private final AuthorService authorService;
+
     public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
     }
@@ -62,7 +64,6 @@ public class AuthorController {
             return "redirect:/authors";
         }
     }
-
     @GetMapping("/delete/{id}")
     public String deleteAuthor(@PathVariable int id, RedirectAttributes redirectAttributes) {
         try {
@@ -79,4 +80,20 @@ public class AuthorController {
     }
 
 
+    @GetMapping("/authors")
+    public String getAuthors(@RequestParam(required = false) String keyword, Model model) {
+        List<AuthorSearchDTO> authors;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            authors = authorService.searchAuthorsByName(keyword);
+        } else {
+            authors = authorService.getAllAuthors();
+        }
+        model.addAttribute("authors", authors);
+        model.addAttribute("keyword", keyword);
+        return "AuthorSearch";
+    }
 }
+
+
+
