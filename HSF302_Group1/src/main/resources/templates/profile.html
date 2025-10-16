@@ -142,6 +142,7 @@
         <tr><th>Balance</th><td th:text="${user.balance} + ' VND'"></td></tr>
         <tr><th>Membership</th><td th:text="${user.membership} ?: 'NONE'"></td></tr>
         <tr><th>Status</th><td th:text="${user.status} ? 'Active' : 'Inactive'"></td></tr>
+        <tr><th>EndDate</th><td th:text="${user.membership eq 'FREE' ? '∞':user.membershipEndDate}"></td></tr>
     </table>
 
     <div style="text-align:center;">
