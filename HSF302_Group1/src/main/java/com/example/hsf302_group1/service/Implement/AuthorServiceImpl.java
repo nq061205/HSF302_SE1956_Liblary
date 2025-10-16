@@ -2,7 +2,6 @@ package com.example.hsf302_group1.service.Implement;
 
 import com.example.hsf302_group1.dto.AuthorSearchDTO;
 import com.example.hsf302_group1.mapper.AuthorMapper;
-import com.example.hsf302_group1.model.Author;
 import com.example.hsf302_group1.repository.AuthorRepository;
 import com.example.hsf302_group1.service.AuthorService;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepo;
+
 
     public AuthorServiceImpl(AuthorRepository authorRepo) {
         this.authorRepo = authorRepo;

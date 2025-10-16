@@ -2,12 +2,16 @@ package com.example.hsf302_group1.config;
 
 import com.example.hsf302_group1.model.Author;
 import com.example.hsf302_group1.model.Book;
+import com.example.hsf302_group1.model.User;
 import com.example.hsf302_group1.repository.AuthorRepository;
 import com.example.hsf302_group1.repository.BookRepository;
+import com.example.hsf302_group1.repository.BorrowBookRepository;
+import com.example.hsf302_group1.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,6 +72,30 @@ public class DataInitializer {
                 System.out.println("✅ Dữ liệu mẫu Author và Book đã được khởi tạo!");
             } else {
                 System.out.println("ℹ️ Dữ liệu đã tồn tại, không cần khởi tạo lại.");
+            }
+        };
+    }
+
+    @Bean
+    CommandLineRunner initData(UserRepository userRepo,
+                               BookRepository bookRepo,
+                               BorrowBookRepository borrowBookRepo) {
+        return args -> {
+
+            if (userRepo.count() == 0) {
+                User u1 = new User("Nguyen Van A", true, Date.valueOf("1998-05-21"), 500000, "Ordinary");
+                User u2 = new User("Tran Thi B", false, Date.valueOf("1999-11-12"), 1200000, "Advance");
+                User u3 = new User("Le Quang C", true, Date.valueOf("2005-10-20"), 10000000, "Premium");
+                userRepo.saveAll(List.of(u1, u2, u3));
+            }
+
+            // ====== Thêm Book mẫu ======
+            if (bookRepo.count() == 0) {
+                Book book1 = new Book("Mắt Biếc", "Tiểu thuyết", 100000);
+                Book book2 = new Book("Cho Tôi Xin Một Vé Đi Tuổi Thơ", "Văn học thiếu nhi", 85000);
+                Book book3 = new Book("Truyện Kiều", "Thơ", 120000);
+                Book book4 = new Book("Lão Hạc", "Truyện ngắn", 75000);
+                bookRepo.saveAll(Arrays.asList(book1, book2, book3, book4));
             }
         };
     }

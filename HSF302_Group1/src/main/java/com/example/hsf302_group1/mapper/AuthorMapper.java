@@ -4,6 +4,7 @@ import com.example.hsf302_group1.dto.AuthorSearchDTO;
 import com.example.hsf302_group1.model.Author;
 import com.example.hsf302_group1.model.Book;
 
+
 import java.util.stream.Collectors;
 
 public class AuthorMapper {
@@ -25,4 +26,5 @@ public class AuthorMapper {
 
         return dto;
     }
+
 }

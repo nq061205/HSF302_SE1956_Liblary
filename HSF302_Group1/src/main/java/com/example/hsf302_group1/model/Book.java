@@ -33,8 +33,7 @@ public class Book {
 
 
     public Book() {}
-    public Book(int id, String name, double price, String type) {
-        this.id = id;
+    public Book(String name, String type,double price) {
         this.name = name;
         this.price = price;
         this.type = type;

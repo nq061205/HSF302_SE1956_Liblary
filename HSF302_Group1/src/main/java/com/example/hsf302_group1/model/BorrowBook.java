@@ -25,11 +25,15 @@ public class BorrowBook {
     @Column(name="return_date")
     private Date dateReturned;
 
+    @Column(name="status")
+    private String status;
+
     public BorrowBook() {
     }
-    public BorrowBook(Book book, User user, Date dateBorrow, Date dateReturned) {
+    public BorrowBook(Book book, User user,String status, Date dateBorrow, Date dateReturned) {
         this.book = book;
         this.user = user;
+        this.status = status;
         this.dateBorrow = dateBorrow;
         this.dateReturned = dateReturned;
     }
@@ -72,6 +76,14 @@ public class BorrowBook {
 
     public void setDateReturned(Date dateReturned) {
         this.dateReturned = dateReturned;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

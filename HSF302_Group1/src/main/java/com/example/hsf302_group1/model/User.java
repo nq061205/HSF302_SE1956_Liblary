@@ -35,8 +35,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String name, boolean gender, Date dob, double balance, String membership) {
-        this.id = id;
+    public User(String name, boolean gender, Date dob, double balance, String membership) {
         this.name = name;
         this.gender = gender;
         this.dob = dob;

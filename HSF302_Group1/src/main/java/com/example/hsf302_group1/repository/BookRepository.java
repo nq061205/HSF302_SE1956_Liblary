@@ -9,6 +9,9 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
 
+
+    Book getBookById(Integer id);
+
     List<Book> findByNameContainingIgnoreCase(String keyword);
 
     List<Book> findByTypeContainingIgnoreCase(String type);
