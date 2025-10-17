@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,21 +83,25 @@ public class DataInitializer {
                                BookRepository bookRepo,
                                BorrowBookRepository borrowBookRepo) {
         return args -> {
-
             if (userRepo.count() == 0) {
-                User u1 = new User("Nguyen Van A", true, Date.valueOf("1998-05-21"), 500000, "Ordinary");
-                User u2 = new User("Tran Thi B", false, Date.valueOf("1999-11-12"), 1200000, "Advance");
-                User u3 = new User("Le Quang C", true, Date.valueOf("2005-10-20"), 10000000, "Premium");
+                User u1 = new User("Nguyen Van A", true,Date.valueOf("1998-10-11") , 500000, "Ordinary",true);
+                User u2 = new User("Tran Thi B", false, Date.valueOf("1999-11-12"), 1200000, "Advance",true);
+                User u3 = new User("Le Quang C", true, Date.valueOf("2005-10-20"), 10000000, "Premium",true);
                 userRepo.saveAll(List.of(u1, u2, u3));
             }
 
             // ====== Thêm Book mẫu ======
             if (bookRepo.count() == 0) {
-                Book book1 = new Book("Mắt Biếc", "Tiểu thuyết", 100000);
-                Book book2 = new Book("Cho Tôi Xin Một Vé Đi Tuổi Thơ", "Văn học thiếu nhi", 85000);
-                Book book3 = new Book("Truyện Kiều", "Thơ", 120000);
-                Book book4 = new Book("Lão Hạc", "Truyện ngắn", 75000);
-                bookRepo.saveAll(Arrays.asList(book1, book2, book3, book4));
+                List<Book> books = new ArrayList<>();
+                books.add(new Book("Mắt Biếc", "Tiểu thuyết", 100000));
+                books.add(new Book("Cho Tôi Xin Một Vé Đi Tuổi Thơ", "Văn học thiếu nhi", 85000));
+                books.add(new Book("Truyện Kiều", "Thơ", 120000));
+                books.add(new Book("Lão Hạc", "Truyện ngắn", 75000));
+                for (int i = 1; i <= 17; i++) {
+                    books.add(new Book("Sách mẫu " + i, "Thể loại " + ((i % 5) + 1), 50000 + i * 1000));
+                }
+
+                bookRepo.saveAll(books);
             }
         };
     }

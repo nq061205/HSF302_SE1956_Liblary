@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -88,6 +89,31 @@ public class BorrowBookServiceImpl implements BorrowBookService {
                 .toList();
 
         return borrowedDTOs;
+    }
+
+    @Override
+    public int countByUserIdAndStatusAndDateBorrowBetween(int userId,String status, Date startDate, Date endDate) {
+        return borrowBookRepo.countByUserIdAndStatusAndDateBorrowBetween(userId,status, startDate, endDate);
+    }
+
+    @Override
+    public BorrowResponseDTO save(BorrowResponseDTO borrowResponseDTO) {
+        BorrowBook borrow = BorrowBookMapper.toBorrowBook(borrowResponseDTO);
+        BorrowBook saved = borrowBookRepo.save(borrow);
+        return BorrowBookMapper.toBorrowResponseDTO(saved);
+    }
+
+    @Override
+    public BorrowBook findById(int borrowId) {
+        // Trả về BorrowBook nếu tồn tại, nếu không ném exception
+        return borrowBookRepo.findById(borrowId)
+                .orElseThrow(() -> new RuntimeException("Borrow record not found with ID: " + borrowId));
+    }
+
+    @Override
+    public BorrowBook saveEntity(BorrowBook borrowBook) {
+        return borrowBookRepo.save(borrowBook);
+
     }
 
 

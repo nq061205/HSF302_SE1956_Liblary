@@ -3,6 +3,7 @@ package com.example.hsf302_group1.model;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -29,18 +30,23 @@ public class User {
     @Column(name="status")
     private boolean status;
 
+    @Column(name = "membership_end_date")
+    private Date membershipEndDate;
+
     @OneToMany(mappedBy = "user")
     private List<BorrowBook> borrowBooks;
 
     public User() {
     }
 
-    public User(String name, boolean gender, Date dob, double balance, String membership) {
+    public User( String name, boolean gender, Date dob, double balance, String membership, boolean status) {
         this.name = name;
         this.gender = gender;
         this.dob = dob;
         this.balance = balance;
         this.membership = membership;
+        this.status = status;
+        this.membershipEndDate = Date.valueOf(LocalDate.now().plusMonths(1));
     }
 
     public int getId() {
@@ -89,6 +95,22 @@ public class User {
 
     public void setMembership(String membership) {
         this.membership = membership;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public Date getMembershipEndDate() {
+        return membershipEndDate;
+    }
+
+    public void setMembershipEndDate(Date membershipEndDate) {
+        this.membershipEndDate = membershipEndDate;
     }
 
     @Override
