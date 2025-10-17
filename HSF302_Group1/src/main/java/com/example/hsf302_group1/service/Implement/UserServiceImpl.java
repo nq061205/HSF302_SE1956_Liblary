@@ -3,10 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package com.example.hsf302_group1.service;
+package com.example.hsf302_group1.service.Implement;
 
 import com.example.hsf302_group1.model.User;
 import com.example.hsf302_group1.repository.UserRepository;
+import com.example.hsf302_group1.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findUsersByNameContaining(String name) {
-        return userRepository.findByNamaeContaining(name);
+        return userRepository.findByNameContaining(name);
     }
 
     @Override

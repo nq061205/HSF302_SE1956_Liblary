@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
 
-    List<User> findByNamaeContaining(String name);
+    List<User> findByNameContaining(String name);
     List<User> findByMembership (String membership);
     List <User> findByBalanceGreaterThan(double balance);
     List<User> findByStatus (boolean status);

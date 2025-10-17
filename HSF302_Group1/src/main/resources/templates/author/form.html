@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Author Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h1 th:text="${pageTitle}">Author Form</h1>
+
+    <div th:if="${message}" class="alert alert-success" role="alert">
+        [[${message}]]
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        [[${error}]]
+    </div>
+
+    <form th:action="@{/authors/save}" th:object="${author}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Name:</label>
+            <div class="col-sm-10">
+                <input type="text" th:field="*{name}" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Date of Birth:</label>
+            <div class="col-sm-10">
+                <input type="date" th:field="*{dob}" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Quotes:</label>
+            <div class="col-sm-10">
+                <textarea th:field="*{quotes}" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group row" th:if="${author.id > 0 && author.bookList != null && !author.bookList.isEmpty()}">
+            <label class="col-sm-2 col-form-label">Books:</label>
+            <div class="col-sm-10">
+                <ul class="list-group">
+                    <li class="list-group-item" th:each="book : ${author.bookList}">
+                        <span th:text="${book.name}"></span>
+                        <span class="badge badge-info" th:text="'$' + ${book.price}"></span>
+                        <span class="badge badge-secondary" th:text="${book.type}"></span>
+                    </li>
+                </ul>
+                <small class="form-text text-muted">To add or remove books, please use the Book management page.</small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a th:href="@{/authors}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

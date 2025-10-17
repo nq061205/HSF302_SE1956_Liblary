@@ -14,6 +14,30 @@ public class Book {
     @Column(name="name")
     private String name;
 
+    public List<Author> getAuthorList() {
+        return authorList;
+    }
+
+    public void setAuthorList(List<Author> authorList) {
+        this.authorList = authorList;
+    }
+
+    public List<BorrowBook> getBorrowBooks() {
+        return borrowBooks;
+    }
+
+    public void setBorrowBooks(List<BorrowBook> borrowBooks) {
+        this.borrowBooks = borrowBooks;
+    }
+
+    public Library getLibrary() {
+        return library;
+    }
+
+    public void setLibrary(Library library) {
+        this.library = library;
+    }
+
     @Column(name="price")
     private double price;
 

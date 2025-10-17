@@ -1,92 +1,166 @@
 package com.example.hsf302_group1.controller;
 
+import com.example.hsf302_group1.model.Author;
 import com.example.hsf302_group1.model.Book;
+import com.example.hsf302_group1.service.AuthorService;
 import com.example.hsf302_group1.service.BookService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/books")
 public class BookController {
-    private final BookService bookService;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
+    @Autowired
+    private BookService bookService;
 
+    @Autowired
+    private AuthorService authorService;
+
+    // Display list of books
     @GetMapping
-    public String listBooks(Model model)  {
-        model.addAttribute("books", bookService.getAllBooks());
-        return "books/list";
+    public String listBooks(Model model) {
+        List<Book> books = bookService.getAllBooks();
+        model.addAttribute("books", books);
+        return "book/list";
     }
 
+    // Show form to create a new book
     @GetMapping("/new")
     public String showNewBookForm(Model model) {
-        model.addAttribute("book" , new Book());
-        model.addAttribute("isNew", true);
-        return "books/form";
+        Book book = new Book();
+        List<Author> allAuthors = authorService.getAllAuthors();
+
+        model.addAttribute("book", book);
+        model.addAttribute("allAuthors", allAuthors);
+        model.addAttribute("pageTitle", "Thêm sách mới");
+
+        return "book/form";
     }
 
+    // Save book or create new author and then assign to book
     @PostMapping("/save")
-    public String saveBook(@ModelAttribute Book book, RedirectAttributes redirectAttributes) {
+    public String saveBook(@ModelAttribute Book book,
+                           @RequestParam(value = "authorIds", required = false) List<Integer> authorIds,
+                           @RequestParam(value = "action", defaultValue = "saveBook") String action,
+                           @RequestParam(value = "newAuthorName", required = false) String newAuthorName,
+                           @RequestParam(value = "newAuthorDob", required = false) String newAuthorDob,
+                           @RequestParam(value = "newAuthorQuotes", required = false) String newAuthorQuotes,
+                           Model model,
+                           RedirectAttributes redirectAttributes) {
         try {
-            bookService.saveBook(book);
-            redirectAttributes.addFlashAttribute("message" , "Book saved successfully!");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-            return "redirect:/books";
-        }catch (Exception e){
-            redirectAttributes.addAttribute("message" , "Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            // Nếu action là createAuthor thì tạo mới tác giả trước
+            if ("createAuthor".equals(action) && newAuthorName != null && !newAuthorName.trim().isEmpty()) {
+                // Tạo tác giả mới
+                Author newAuthor = new Author();
+                newAuthor.setName(newAuthorName.trim());
+                newAuthor.setDob(newAuthorDob);
+                newAuthor.setQuotes(newAuthorQuotes);
+
+                Author savedAuthor = authorService.saveAuthor(newAuthor);
+
+
+                model.addAttribute("message", "Tác giả \"" + savedAuthor.getName() + "\" đã được thêm thành công!");
+
+                //them tac gia vao sach hien co
+                if (book.getId() > 0) {
+                    bookService.addAuthorToBook(book.getId(), savedAuthor.getId());
+                }
+
+                //lay danh sach tac gia moi nhta
+                List<Author> allAuthors = authorService.getAllAuthors();
+
+                //lay lai sach moi nhat
+                if (book.getId() > 0) {
+                    book = bookService.getBookById(book.getId()).orElse(book);
+                }
+
+
+                model.addAttribute("book", book);
+                model.addAttribute("allAuthors", allAuthors);
+                model.addAttribute("pageTitle", book.getId() > 0 ? "Sửa sách (ID: " + book.getId() + ")" : "Thêm sách mới");
+
+                return "book/form";
+            }
+            // new action la saveBook thi luu sach thoi
+            else {
+                if (book.getId() > 0) {
+                    // cap nhat sach vs tac gia moi
+                    bookService.updateBookWithAuthors(book, authorIds);
+                    redirectAttributes.addFlashAttribute("message", "Sách đã được cập nhật thành công!");
+                } else {
+                    // luu sach moi
+                    Book savedBook = bookService.saveBook(book);
+
+                    // them tac gia vao sach neu co
+                    if (authorIds != null && !authorIds.isEmpty()) {
+                        for (Integer authorId : authorIds) {
+                            bookService.addAuthorToBook(savedBook.getId(), authorId);
+                        }
+                    }
+
+                    redirectAttributes.addFlashAttribute("message", "Sách đã được thêm thành công!");
+                }
+
+                return "redirect:/books";
+            }
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
             return "redirect:/books";
         }
     }
 
+    // Show form to edit a book
     @GetMapping("/edit/{id}")
-    public String showEditBookForm(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<Book> book = bookService.getBookById(id);
-        if(book.isPresent()) {
-            model.addAttribute("book", book.get());
-            model.addAttribute("isNew", false);
-            return "books/form";
-        }else {
-            redirectAttributes.addAttribute("message", "Book not found!");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+    public String showEditBookForm(@PathVariable("id") int id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Book book = bookService.getBookById(id)
+                    .orElseThrow(() -> new Exception("Không tìm thấy sách với ID: " + id));
+
+            List<Author> allAuthors = authorService.getAllAuthors();
+
+            model.addAttribute("book", book);
+            model.addAttribute("allAuthors", allAuthors);
+            model.addAttribute("pageTitle", "Sửa sách (ID: " + id + ")");
+
+            return "book/form";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/books";
         }
     }
 
+    // Delete a book
     @GetMapping("/delete/{id}")
-    public String deleteBook(@PathVariable int id, RedirectAttributes redirectAttributes) {
+    public String deleteBook(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         try {
-            bookService.deleteBook(id);
-            redirectAttributes.addFlashAttribute("message", "Book deleted successfully!");
-            redirectAttributes.addFlashAttribute("alertClass", "alert-success");
-
-        }catch (Exception e){
-            redirectAttributes.addFlashAttribute("message", "Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("alertClass", "alert-danger");
+            bookService.deleteBookById(id);
+            redirectAttributes.addFlashAttribute("message", "Sách đã được xóa thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
         }
-
         return "redirect:/books";
     }
 
-    @GetMapping("/search")
-    public String searchBooks(@RequestParam(required = false) String name,
-                              Model model) {
-        if(name != null && !name.isEmpty()) {
-            model.addAttribute("books", bookService.findBooksByNameContaining(name));
-            model.addAttribute("searchKeyword", name);
-        }else {
-            model.addAttribute("books", bookService.getAllBooks());
+    // Remove author from book
+    @GetMapping("/{bookId}/remove-author/{authorId}")
+    public String removeAuthorFromBook(@PathVariable("bookId") int bookId,
+                                       @PathVariable("authorId") int authorId,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            bookService.removeAuthorFromBook(bookId, authorId);
+            redirectAttributes.addFlashAttribute("message", "Đã xóa tác giả khỏi sách thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Lỗi: " + e.getMessage());
         }
-
-        return "books/list";
+        return "redirect:/books/edit/" + bookId;
     }
 }
